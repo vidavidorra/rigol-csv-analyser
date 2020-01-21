@@ -5,3 +5,4 @@ dist/
 LICENSE.md
 modules/
 node_modules/
+public/
