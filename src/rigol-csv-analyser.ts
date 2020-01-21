@@ -11,9 +11,13 @@ export class RigolCsvAnalyser {
     chart: 'chart.js',
     data: 'data.json',
   };
+  private csvFile: string;
+  private title: string;
   private port: number;
 
-  public constructor(port: number) {
+  public constructor(csvFile: string, title: string, port: number) {
+    this.csvFile = csvFile;
+    this.title = title;
     this.port = port;
   }
 
@@ -40,7 +44,7 @@ export class RigolCsvAnalyser {
     );
 
     const view = {
-      title: 'Oscilloscope measurements',
+      title: this.title,
       chartScript: this.serveFiles.chart,
       dataFile: this.serveFiles.data,
     };
@@ -60,7 +64,3 @@ export class RigolCsvAnalyser {
     );
   }
 }
-
-const rca = new RigolCsvAnalyser(8081);
-rca.Analyse();
-rca.Serve();
