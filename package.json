@@ -10,7 +10,8 @@
     "release:changelog": "standard-version --dry-run --skip.commit=true --skip.tag=true",
     "release:commit": "git commit --allow-empty -m \"chore(release): trigger release process [ci release]\"",
     "release:message": "chalk -t \"Run {green.bold git push} to publish the release or {red.bold git reset HEAD^} to undo the release.\"",
-    "release": "run-s release:changelog release:commit release:message"
+    "release": "run-s release:changelog release:commit release:message",
+    "analyse": "node_modules/.bin/ts-node src/rigol-csv-analyser"
   },
   "repository": {
     "type": "git",
