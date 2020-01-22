@@ -22,6 +22,9 @@ $.getJSON('{{ dataFile }}', function(data) {
     subtitle: {
       text: 'Built chart in ...',
     },
+    legend: {
+      enabled: true,
+    },
     rangeSelector: {
       buttons: [
         {
