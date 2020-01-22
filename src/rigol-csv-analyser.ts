@@ -1,3 +1,4 @@
+import { Options } from './options';
 import { Server } from './server';
 import fs from 'fs';
 import mustache from 'mustache';
@@ -11,14 +12,10 @@ export class RigolCsvAnalyser {
     chart: 'chart.js',
     data: 'data.json',
   };
-  private csvFile: string;
-  private title: string;
-  private port: number;
+  private options: Options;
 
-  public constructor(csvFile: string, title: string, port: number) {
-    this.csvFile = csvFile;
-    this.title = title;
-    this.port = port;
+  public constructor(options: Options) {
+    this.options = options;
   }
 
   public Analyse(): void {
@@ -30,7 +27,7 @@ export class RigolCsvAnalyser {
   }
 
   public Serve(): void {
-    const server = new Server(this.port, this.serveDirectory);
+    const server = new Server(this.options.port, this.serveDirectory);
     server.Start();
     server.OpenBrowser();
   }
@@ -44,7 +41,7 @@ export class RigolCsvAnalyser {
     );
 
     const view = {
-      title: this.title,
+      title: this.options.title,
       chartScript: this.serveFiles.chart,
       dataFile: this.serveFiles.data,
     };
