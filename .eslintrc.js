@@ -1,13 +1,16 @@
 module.exports = {
   extends: [
+    'eslint:recommended',
+    'plugin:@typescript-eslint/eslint-recommended',
     'plugin:@typescript-eslint/recommended',
-    'prettier',
     'prettier/@typescript-eslint',
+    'plugin:prettier/recommended',
+    'plugin:json/recommended'
   ],
   parser: '@typescript-eslint/parser',
-  plugins: ['@typescript-eslint', 'json'],
+  plugins: ['@typescript-eslint'],
   parserOptions: {
-    ecmaVersion: 2018,
+    ecmaVersion: 11,
     sourceType: 'module',
     ecmaFeatures: {
       jsx: true,
@@ -18,6 +21,7 @@ module.exports = {
     node: true,
   },
   rules: {
+    'prettier/prettier': 'error',
     'no-fallthrough': 'error',
     'sort-imports': 'warn',
   },
