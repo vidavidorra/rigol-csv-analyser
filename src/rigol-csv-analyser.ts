@@ -32,12 +32,12 @@ export class RigolCsvAnalyser {
     this.GenerateChart();
   }
 
-  /**
-   * CSV header from a Rigol DS1054Z.
-   * X,CH1,CH2,Start,Increment,
-   * Sequence,Volt,Volt,-5.999998e-02,2.000000e-05
-   */
   private ParseHeader(): void {
+    /**
+     * CSV header from a Rigol DS1054Z.
+     * X,CH1,CH2,Start,Increment,
+     * Sequence,Volt,Volt,-5.999998e-02,2.000000e-05
+     */
     try {
       const data = Buffer.alloc(200);
       const fd = fs.openSync(this.options.csvFile, 'r');
@@ -52,8 +52,6 @@ export class RigolCsvAnalyser {
           return line.replace(/,$/, '');
         });
 
-      console.log(lines);
-
       const records = parse(lines.join('\n'), {
         columns: false,
         from_line: 1, // eslint-disable-line @typescript-eslint/camelcase
@@ -64,9 +62,6 @@ export class RigolCsvAnalyser {
       );
       this.header.increment = Number(records[1][incrementIndex]);
       this.header.channels = records[0].filter(item => item.startsWith('CH'));
-
-      console.log(`Channels: '${this.header.channels.join("', '")}'`);
-      console.log(`Increment: ${this.header.increment} s`);
     } catch (error) {
       console.log('Error parsing the header of the file');
       console.log(error);
