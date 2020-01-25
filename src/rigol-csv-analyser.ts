@@ -2,8 +2,14 @@ import { Options } from './options';
 import { Server } from './server';
 import fs from 'fs';
 import mustache from 'mustache';
-import parse from 'csv-parse/lib/sync';
+import parse from 'csv-parse';
 import path from 'path';
+import transform from 'stream-transform';
+
+interface Header {
+  increment: number;
+  channels: string[];
+}
 
 export class RigolCsvAnalyser {
   private serveDirectory = 'public';
@@ -14,59 +20,83 @@ export class RigolCsvAnalyser {
     data: 'data.json',
   };
   private options: Options;
-
-  private header = {
-    increment: 0,
-    channels: [],
-  };
+  private header: Header;
 
   public constructor(options: Options) {
     this.options = options;
   }
 
-  public Analyse(): void {
-    this.ParseHeader();
-    /**
-     * - Generate serveFiles.data
-     */
+  public async Analyse(): Promise<void> {
+    this.header = await this.ParseHeader();
+    console.log(`Increment: ${this.header.increment * 1000} ms`);
+    console.log(`Channels: '${this.header.channels.join("', '")}'`);
+
+    // await this.ParseData();
+
     this.GenerateChart();
   }
 
-  private ParseHeader(): void {
+  private ParseHeader(): Promise<Header> {
     /**
      * CSV header from a Rigol DS1054Z.
+     *
+     * ```
      * X,CH1,CH2,Start,Increment,
      * Sequence,Volt,Volt,-5.999998e-02,2.000000e-05
+     * ```
      */
-    try {
-      const data = Buffer.alloc(200);
-      const fd = fs.openSync(this.options.csvFile, 'r');
-      fs.readSync(fd, data, 0, data.length, 0);
-      fs.closeSync(fd);
+    return new Promise((resolve, reject) => {
+      const header: Header = {
+        increment: 0,
+        channels: [],
+      };
 
-      const lines = data
-        .toString()
-        .split(/\r|\n|\r\n/)
-        .slice(0, 2)
-        .map((line: string): string => {
-          return line.replace(/,$/, '');
-        });
-
-      const records = parse(lines.join('\n'), {
-        columns: false,
-        from_line: 1, // eslint-disable-line @typescript-eslint/camelcase
+      /*
+       * The header is expected to be less than 200 bytes. The following header
+       * has 71 bytes, even with 8 channels it would still be ... bytes.
+       *
+       * ```
+       * X,CH1,CH2,Start,Increment,
+       * Sequence,Volt,Volt,-5.999998e-02,2.000000e-05
+       * ```
+       */
+      const headerBytes = 200;
+      const readStream = fs.createReadStream(this.options.csvFile, {
+        encoding: 'utf8',
+        end: headerBytes,
       });
 
-      const incrementIndex = records[0].findIndex(
-        item => 'increment' === item.toLowerCase()
-      );
-      this.header.increment = Number(records[1][incrementIndex]);
-      this.header.channels = records[0].filter(item => item.startsWith('CH'));
-    } catch (error) {
-      console.log('Error parsing the header of the file');
-      console.log(error);
-      process.exit(1);
-    }
+      readStream.on('close', (): void => {
+        reject('CSV header could not be parsed.');
+      });
+      readStream.on('error', (error): void => {
+        reject(error);
+      });
+
+      const parser = parse({
+        relax_column_count: true, // eslint-disable-line @typescript-eslint/camelcase
+        columns: true,
+      });
+
+      parser.on('data', (chunk): void => {
+        const row = JSON.parse(JSON.stringify(chunk).toLowerCase());
+
+        if (!header.increment && 'increment' in row) {
+          const keys = Object.keys(row);
+          header.channels = keys.filter(key => key.startsWith('ch'));
+          header.increment = row.increment;
+
+          readStream.destroy();
+          parser.destroy();
+          resolve(header);
+        }
+      });
+      parser.on('error', error => {
+        reject(error);
+      });
+
+      readStream.pipe(parser);
+    });
   }
 
   public Serve(): void {
