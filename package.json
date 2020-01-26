@@ -34,6 +34,7 @@
     "@typescript-eslint/eslint-plugin": "^2.16.0",
     "@typescript-eslint/parser": "^2.16.0",
     "chalk-cli": "^4.1.0",
+    "combined-stream": "^1.0.8",
     "concurrently": "^5.0.2",
     "csv-parse": "^4.8.5",
     "csv-stringify": "^5.3.6",
@@ -50,6 +51,7 @@
     "prettier": "^1.19.1",
     "standard-version": "^7.0.1",
     "stream-transform": "^2.0.1",
+    "to-readable-stream": "^2.1.0",
     "ts-node": "^8.6.2",
     "typescript": "^3.7.5",
     "yargs": "^15.1.0"
