@@ -3,12 +3,12 @@ import { RigolCsvAnalyser } from './rigol-csv-analyser';
 import yargs from 'yargs';
 
 class Cli {
-  public Run(argv: string[]): void {
+  public async Run(argv: string[]): Promise<void> {
     try {
       const options = this.Parse(argv);
 
       const rsv = new RigolCsvAnalyser(options);
-      rsv.Analyse();
+      await rsv.Analyse();
       rsv.Serve();
     } catch (error) {
       console.log(error);
