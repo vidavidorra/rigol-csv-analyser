@@ -56,14 +56,14 @@ export class RigolCsvAnalyser {
   private Combine(): Promise<void> {
     return new Promise((resolve, reject) => {
       const combinedStream = CombinedStream.create();
-      combinedStream.append(toReadableStream('[\n'));
+      combinedStream.append(toReadableStream('{\n  "series": [\n'));
 
       this.header.Channels().forEach((channel, index, channels) => {
         const prefixes = [
-          `  {`,
-          `    "name": "${channel}",`,
-          '    "type": "line",',
-          '    "data": [',
+          `    {`,
+          `      "name": "${channel}",`,
+          '      "type": "line",',
+          '      "data": [',
         ];
         combinedStream.append(toReadableStream(`${prefixes.join('\n')}\n`));
 
@@ -76,15 +76,15 @@ export class RigolCsvAnalyser {
         });
         combinedStream.append(readStream);
 
-        const suffixes = ['    ]'];
+        const suffixes = ['      ]'];
         if (channels.length - 1 === index) {
-          suffixes.push('  }');
+          suffixes.push('    }');
         } else {
-          suffixes.push('  },');
+          suffixes.push('    },');
         }
         combinedStream.append(toReadableStream(`${suffixes.join('\n')}\n`));
       });
-      combinedStream.append(toReadableStream(']\n'));
+      combinedStream.append(toReadableStream('  ]\n}\n'));
 
       const serveDataFile = path.join(
         this.serveDirectory,

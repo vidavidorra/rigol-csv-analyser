@@ -1,4 +1,4 @@
-$.getJSON('{{ dataFile }}', function(data) {
+$.getJSON('{{ dataFile }}', data => {
   const start = new Date();
   Highcharts.stockChart('container', {
     chart: {
@@ -130,11 +130,6 @@ $.getJSON('{{ dataFile }}', function(data) {
         },
       },
     },
-    series: [
-      {
-        data: data.data,
-        type: 'line',
-      },
-    ],
+    series: data.series,
   });
 });
