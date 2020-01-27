@@ -1,4 +1,4 @@
-$.getJSON('{{ dataFile }}', data => {
+$.getJSON('{{ dataFile }}', function(data) {
   const start = new Date();
   Highcharts.stockChart('container', {
     chart: {
@@ -110,7 +110,13 @@ $.getJSON('{{ dataFile }}', data => {
     tooltip: {
       split: true,
       formatter: function() {
-        return [`<b>${(this.x / 1000).toLocaleString()} ms<b>`, `${this.y} V`];
+        const tooltip = [`<b>${(this.x / 1000).toLocaleString()} ms<b>`];
+
+        this.points.forEach(point => {
+          tooltip.push(`${point.y} V`);
+        });
+
+        return tooltip;
       },
     },
     navigator: {
