@@ -137,6 +137,27 @@ $.getJSON('{{ dataFile }}', function(data) {
         },
       },
     },
+    annotations: [
+      {
+        type: 'measure',
+        typeOptions: {
+          point: {
+            x: 0,
+            y: 0,
+            controlPoint: {
+              /* control point options */
+            },
+          },
+          label: {
+            enabled: false,
+          },
+          background: {
+            width: 300 + 'px',
+            height: 150 + 'px',
+          },
+        },
+      },
+    ],
     plotOptions: {
       series: {
         marker: {
