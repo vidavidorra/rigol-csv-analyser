@@ -5,11 +5,14 @@ $.getJSON('{{ dataFile }}', function(data) {
       type: 'line',
       events: {
         load: function() {
-          if (!window.TestController) {
-            this.setTitle(null, {
-              text: `Built chart in ${new Date() - start} ms`,
-            });
-          }
+          this.setTitle(null, {
+            text: `Built chart in ${new Date() - start} ms`,
+          });
+
+          this.annotations.forEach(annotation => {
+            annotation.setControlPointsVisibility(true);
+            annotation.cpVisibility = true;
+          });
         },
       },
       zoomType: 'x',
@@ -86,6 +89,11 @@ $.getJSON('{{ dataFile }}', function(data) {
         width: 40,
       },
       inputEnabled: false,
+    },
+    stockTools: {
+      gui: {
+        buttons: ['toggleAnnotations', 'separator', 'fullScreen'],
+      },
     },
     xAxis: {
       type: 'datetime',
