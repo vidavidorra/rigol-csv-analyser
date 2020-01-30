@@ -9,7 +9,9 @@ class Cli {
 
       const rsv = new RigolCsvAnalyser(options);
       await rsv.Analyse();
-      rsv.Serve();
+      if (options.serve) {
+        rsv.Serve();
+      }
     } catch (error) {
       console.log(error);
       process.exit(1);
@@ -49,6 +51,12 @@ class Cli {
           type: 'number',
           default: 8080,
         },
+        serve: {
+          alias: 's',
+          describe: 'Whether the HTML document should be served.',
+          type: 'boolean',
+          default: true,
+        },
         unit: {
           describe: 'Unit(s) of the channel(s).',
           type: 'array',
@@ -72,6 +80,7 @@ class Cli {
       csvFile: args.csvFile as string,
       title: args.title as string,
       port: args.port,
+      serve: args.serve,
       channelName: args.name,
       channelUnit: args.unit,
     };
