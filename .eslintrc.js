@@ -5,7 +5,7 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'prettier/@typescript-eslint',
     'plugin:prettier/recommended',
-    'plugin:json/recommended'
+    'plugin:json/recommended',
   ],
   parser: '@typescript-eslint/parser',
   plugins: ['@typescript-eslint'],
@@ -19,6 +19,7 @@ module.exports = {
   env: {
     es6: true,
     node: true,
+    jquery: true,
   },
   rules: {
     'prettier/prettier': 'error',

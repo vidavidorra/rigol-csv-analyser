@@ -1,6 +1,9 @@
 export class Header {
   private increment: number;
   private channels: string[];
+  private columns: string[];
+  private indexColumnName = 'i';
+  private firstDataLine = 3;
 
   constructor(increment: number, channels: string[]) {
     this.increment = increment;
@@ -16,10 +19,14 @@ export class Header {
   }
 
   public Columns(): string[] {
-    return ['index'].concat(this.channels);
+    return [this.indexColumnName].concat(this.channels);
+  }
+
+  public IndexColumnName(): string {
+    return this.indexColumnName;
   }
 
   public FirstDataLine(): number {
-    return 3;
+    return this.firstDataLine;
   }
 }
