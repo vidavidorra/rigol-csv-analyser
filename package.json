@@ -39,7 +39,6 @@
     "combined-stream": "^1.0.8",
     "concurrently": "^5.0.2",
     "csv-parse": "^4.8.5",
-    "csv-stringify": "^5.3.6",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.9.0",
     "eslint-plugin-json": "^2.0.1",
