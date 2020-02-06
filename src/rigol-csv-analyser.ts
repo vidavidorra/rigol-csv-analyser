@@ -1,6 +1,5 @@
-import { CsvData } from './csv-data';
-import { CsvHeader } from './csv-header';
-import { Header } from './header';
+import * as csv from './csv';
+import * as models from './models/csv';
 import { Options } from './options';
 import { Server } from './server';
 import fs from 'fs';
@@ -21,7 +20,8 @@ export class RigolCsvAnalyser {
     data: 'data.json',
   };
   private options: Options;
-  private header: Header;
+
+  private csv: models.Csv;
 
   public constructor(options: Options) {
     this.options = options;
@@ -29,44 +29,44 @@ export class RigolCsvAnalyser {
   }
 
   public async Analyse(): Promise<void> {
-    this.header = await this.ReadHeader();
+    const csvInstance = new csv.Csv(this.options.csvFile);
+    csvInstance
+      .Csv()
+      .then(csvData => {
+        this.csv = csvData;
+        console.log('Read info:', csvData);
 
-    console.log(`Increment: ${this.header.Increment() * 1000} ms`);
-    console.log(`Channels: '${this.header.Channels().join("', '")}'`);
-
-    await this.ProcessData();
+        console.log(`Increment: ${this.csv.Header().Increment() * 1000} ms`);
+        console.log(
+          `Channels: '${this.csv
+            .Header()
+            .Channels()
+            .join("', '")}'`
+        );
+      })
+      .then(() => {
+        return csvInstance.ProcessData(
+          path.join(this.serveDirectory, this.serveFiles.data)
+        );
+      })
+      .then(() => {
+        console.log('finished');
+      });
 
     this.GenerateChart();
-  }
-
-  private CreateServeDirectory(): void {
-    fs.rmdirSync(this.serveDirectory, { recursive: true });
-    fs.mkdirSync(this.serveDirectory);
-  }
-
-  private ReadHeader(): Promise<Header> {
-    const csvHeader = new CsvHeader(this.options.csvFile);
-    return csvHeader.Read();
   }
 
   public Serve(): void {
     const server = new Server(this.options.port, this.serveDirectory);
     server.Start();
     server.OpenBrowser();
+
+    console.log('Press ctrl+c to close');
   }
 
-  private ProcessData(): Promise<void> {
-    const outputFile = path.join(this.serveDirectory, this.serveFiles.data);
-    const csvData = new CsvData(this.options.csvFile, this.header, outputFile);
-
-    return csvData
-      .Parse()
-      .then(() => {
-        return csvData.Combine();
-      })
-      .then(() => {
-        csvData.RemoveTempFiles();
-      });
+  private CreateServeDirectory(): void {
+    fs.rmdirSync(this.serveDirectory, { recursive: true });
+    fs.mkdirSync(this.serveDirectory);
   }
 
   private GenerateChart(): void {

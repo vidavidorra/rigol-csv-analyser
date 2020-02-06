@@ -31,15 +31,12 @@ export class CsvInfo {
       let numberOfRows = 0;
 
       const readStream = fs.createReadStream(this.path, 'utf8');
-      readStream.on('end', (): void => {
-        this.read = true;
-        resolve();
-      });
       readStream.on('error', (error): void => {
         reject(error);
       });
       readStream.on('end', (): void => {
         this.info = new models.Info(numberOfRows);
+        this.read = true;
         resolve();
       });
 

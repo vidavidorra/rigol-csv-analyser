@@ -1,6 +1,7 @@
 import * as models from '../models/csv';
 import { CsvHeader } from './header';
 import { CsvInfo } from './info';
+import { Data } from './data';
 
 export class Csv {
   private path: string;
@@ -19,6 +20,14 @@ export class Csv {
 
     return this.Read().then(() => {
       return this.csv;
+    });
+  }
+
+  public ProcessData(outputFile: string): Promise<void> {
+    const data = new Data(this.path, outputFile, this.csv);
+
+    return data.Convert().then(() => {
+      return data.Combine();
     });
   }
 

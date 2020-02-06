@@ -46,13 +46,14 @@ export class CsvHeader {
         encoding: 'utf8',
         end: headerBytes,
       });
+      readStream.on('error', (error): void => {
+        reject(error);
+      });
       readStream.on('end', (): void => {
         this.read = true;
         resolve();
       });
-      readStream.on('error', (error): void => {
-        reject(error);
-      });
+
       readStream.on('data', (chunk): void => {
         let records = parse(chunk, {
           relax_column_count: true, // eslint-disable-line @typescript-eslint/camelcase
