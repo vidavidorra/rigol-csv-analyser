@@ -1,9 +1,11 @@
 $.getJSON('{{ dataFile }}', function(data) {
   const start = new Date();
+  // eslint-disable-next-line no-undef
   Highcharts.stockChart('container', {
     chart: {
       type: 'line',
       events: {
+        // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
         load: function() {
           this.setTitle(null, {
             text: `Built chart in ${new Date() - start} ms`,
@@ -98,6 +100,7 @@ $.getJSON('{{ dataFile }}', function(data) {
     xAxis: {
       type: 'datetime',
       labels: {
+        // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
         formatter: function() {
           // console.log(
           //   `min: ${this.axis.min.toFixed(0) /
@@ -117,6 +120,7 @@ $.getJSON('{{ dataFile }}', function(data) {
 
     tooltip: {
       split: true,
+      // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
       formatter: function() {
         const tooltip = [`<b>${(this.x / 1000).toLocaleString()} ms<b>`];
 
@@ -131,6 +135,7 @@ $.getJSON('{{ dataFile }}', function(data) {
       height: 100,
       xAxis: {
         labels: {
+          // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
           formatter: function() {
             return `${(this.value / 1000).toLocaleString()} ms`;
           },
