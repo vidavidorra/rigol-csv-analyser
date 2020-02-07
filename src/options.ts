@@ -3,6 +3,6 @@ export interface Options {
   title: string;
   port: number;
   serve: boolean;
-  channelName: string[];
-  channelUnit: string[];
+  channelNames: string[];
+  channelUnits: string[];
 }

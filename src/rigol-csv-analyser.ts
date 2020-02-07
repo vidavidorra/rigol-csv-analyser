@@ -46,7 +46,8 @@ export class RigolCsvAnalyser {
       })
       .then(() => {
         return csvInstance.ProcessData(
-          path.join(this.serveDirectory, this.serveFiles.data)
+          path.join(this.serveDirectory, this.serveFiles.data),
+          this.options.channelNames
         );
       })
       .then(() => {
@@ -55,6 +56,12 @@ export class RigolCsvAnalyser {
 
     this.GenerateChart();
   }
+
+  // private UpdateChannelNames(): void {
+  //   if (this.options.channelNames.length) {
+
+  //   }
+  // }
 
   public Serve(): void {
     const server = new Server(this.options.port, this.serveDirectory);

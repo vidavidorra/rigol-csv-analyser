@@ -33,7 +33,7 @@ class Cli {
             })
             .example('$0 test.csv', 'Basic usage')
             .example(
-              "$0 test.csv --unit V A --name 'ADC input' output",
+              "$0 test.csv --unit V A --name 'ADC input' Vref",
               'Multiple channels with different units and names'
             );
         }
@@ -57,12 +57,12 @@ class Cli {
           type: 'boolean',
           default: true,
         },
-        unit: {
+        units: {
           describe: 'Unit(s) of the channel(s).',
           type: 'array',
           default: [],
         },
-        name: {
+        names: {
           describe: 'Name(s) of the channel(s).',
           type: 'array',
           default: [],
@@ -81,8 +81,8 @@ class Cli {
       title: args.title as string,
       port: args.port,
       serve: args.serve,
-      channelName: args.name,
-      channelUnit: args.unit,
+      channelNames: args.names,
+      channelUnits: args.units,
     };
   }
 }

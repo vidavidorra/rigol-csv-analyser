@@ -23,12 +23,19 @@ export class Csv {
     });
   }
 
-  public ProcessData(outputFile: string): Promise<void> {
+  public ProcessData(
+    outputFile: string,
+    channelNames: string[]
+  ): Promise<void> {
     const data = new Data(this.path, outputFile, this.csv);
 
-    return data.Convert().then(() => {
-      return data.Combine();
-    });
+    return this.Read()
+      .then(() => {
+        return data.Convert();
+      })
+      .then(() => {
+        return data.Combine(this.ChannelNames(channelNames));
+      });
   }
 
   private Read(): Promise<void> {
@@ -42,6 +49,15 @@ export class Csv {
       ([header, info]) => {
         this.csv = new models.Csv(header, info);
       }
+    );
+  }
+
+  private ChannelNames(channelNames: string[]): string[] {
+    return channelNames.concat(
+      this.csv
+        .Header()
+        .Channels()
+        .slice(channelNames.length)
     );
   }
 }

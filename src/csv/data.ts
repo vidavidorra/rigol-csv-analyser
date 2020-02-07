@@ -83,7 +83,7 @@ export class Data {
     });
   }
 
-  public Combine(): Promise<void> {
+  public Combine(channelNames: string[]): Promise<void> {
     return new Promise((resolve, reject) => {
       const combinedStream = CombinedStream.create();
       combinedStream.append(intoStream('{\n  "series": [\n'));
@@ -94,7 +94,7 @@ export class Data {
         .forEach((channel, index, channels) => {
           const prefixes = [
             `    {`,
-            `      "name": "${channel}",`,
+            `      "name": "${channelNames[index]}",`,
             '      "type": "line",',
             '      "data": [',
           ];
