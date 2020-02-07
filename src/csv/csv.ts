@@ -25,7 +25,8 @@ export class Csv {
 
   public ProcessData(
     outputFile: string,
-    channelNames: string[]
+    channelNames: string[],
+    channelUnits: string[]
   ): Promise<void> {
     const data = new Data(this.path, outputFile, this.csv);
 
@@ -34,7 +35,7 @@ export class Csv {
         return data.Convert();
       })
       .then(() => {
-        return data.Combine(this.ChannelNames(channelNames));
+        return data.Combine(this.ChannelNames(channelNames, channelUnits));
       });
   }
 
@@ -52,12 +53,25 @@ export class Csv {
     );
   }
 
-  private ChannelNames(channelNames: string[]): string[] {
-    return channelNames.concat(
+  private ChannelNames(
+    channelNames: string[],
+    channelUnits: string[]
+  ): string[] {
+    const names = channelNames.concat(
       this.csv
         .Header()
         .Channels()
         .slice(channelNames.length)
     );
+
+    return names.map((name, index) => {
+      const unit = channelUnits[index];
+
+      if (unit) {
+        return `${name} [${unit}]`;
+      }
+
+      return name;
+    });
   }
 }

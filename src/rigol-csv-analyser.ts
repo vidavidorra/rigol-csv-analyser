@@ -47,7 +47,8 @@ export class RigolCsvAnalyser {
       .then(() => {
         return csvInstance.ProcessData(
           path.join(this.serveDirectory, this.serveFiles.data),
-          this.options.channelNames
+          this.options.channelNames,
+          this.options.channelUnits
         );
       })
       .then(() => {
