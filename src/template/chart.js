@@ -112,11 +112,6 @@ $.getJSON('{{ dataFile }}', function(data) {
         },
       },
     },
-    yAxis: {
-      title: {
-        text: 'Voltage [V]',
-      },
-    },
 
     tooltip: {
       split: true,
