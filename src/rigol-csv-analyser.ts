@@ -28,41 +28,27 @@ export class RigolCsvAnalyser {
     this.CreateServeDirectory();
   }
 
-  public async Analyse(): Promise<void> {
-    const csvInstance = new csv.Csv(this.options.csvFile);
-    csvInstance
-      .Csv()
-      .then(csvData => {
-        this.csv = csvData;
-        console.log('Read info:', csvData);
-
-        console.log(`Increment: ${this.csv.Header().Increment() * 1000} ms`);
-        console.log(
-          `Channels: '${this.csv
-            .Header()
-            .Channels()
-            .join("', '")}'`
-        );
-      })
-      .then(() => {
-        return csvInstance.ProcessData(
-          path.join(this.serveDirectory, this.serveFiles.data),
-          this.options.channelNames,
-          this.options.channelUnits
-        );
-      })
-      .then(() => {
-        console.log('finished');
-      });
-
-    this.GenerateChart();
+  public Analyse(): Promise<void> {
+    return new Promise(resolve => {
+      const csvInstance = new csv.Csv(this.options.csvFile);
+      csvInstance
+        .Csv()
+        .then(csvData => {
+          this.csv = csvData;
+        })
+        .then(() => {
+          return csvInstance.ProcessData(
+            path.join(this.serveDirectory, this.serveFiles.data),
+            this.options.channelNames,
+            this.options.channelUnits
+          );
+        })
+        .then(() => {
+          this.GenerateChart();
+          resolve();
+        });
+    });
   }
-
-  // private UpdateChannelNames(): void {
-  //   if (this.options.channelNames.length) {
-
-  //   }
-  // }
 
   public Serve(): void {
     const server = new Server(this.options.port, this.serveDirectory);
