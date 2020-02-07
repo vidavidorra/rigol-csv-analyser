@@ -14,6 +14,7 @@ export class Data {
   private outputFile: string;
   private csv: models.Csv;
   private read: boolean;
+  private tempFiles: string[] = [];
 
   constructor(path: string, outputFile: string, csv: models.Csv) {
     this.path = path;
@@ -127,6 +128,7 @@ export class Data {
         });
 
       writeStream.on('close', () => {
+        this.RemoveTempFiles();
         resolve();
       });
 
@@ -162,6 +164,7 @@ export class Data {
         );
 
         writeStreams[channel] = writeStream;
+        this.tempFiles.push(this.ChannelOutputFile(channel));
       });
 
     return writeStreams;
@@ -169,5 +172,11 @@ export class Data {
 
   private ChannelOutputFile(channel: string): string {
     return `${this.outputFile}-${channel}.txt`;
+  }
+
+  private RemoveTempFiles(): void {
+    this.tempFiles.forEach(file => {
+      fs.unlinkSync(file);
+    });
   }
 }
