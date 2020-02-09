@@ -1,5 +1,6 @@
 import * as models from '../models/csv';
 import CombinedStream from 'combined-stream';
+import { Statistics } from '../statistics';
 import es from 'event-stream';
 import fs from 'fs';
 import intoStream from 'into-stream';
@@ -25,11 +26,13 @@ export class Data {
 
   public Convert(): Promise<void> {
     return new Promise((resolve, reject) => {
+      const statistics = new Statistics();
       const readStream = fs.createReadStream(this.path, 'utf8');
       readStream.on('error', (error): void => {
         reject(error);
       });
       readStream.on('end', (): void => {
+        statistics.Print();
         resolve();
       });
 
@@ -64,6 +67,9 @@ export class Data {
                 index
               ] += `        [${row.index}, ${row.values[index]}],\n`;
               let shouldWrite = lineCount % outputRows === 0;
+              if (index === 0) {
+                statistics.Push([row.values[index]]);
+              }
 
               if (lineCount === this.csv.Info().NumberOfRows()) {
                 outputs[index] = outputs[index].slice(0, -2) + '\n';
