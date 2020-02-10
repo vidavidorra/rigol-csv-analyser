@@ -1,15 +1,10 @@
-import * as ss from 'simple-statistics';
-
 export class Statistics {
   private n = 0;
-  private sum = 0;
-  private min = Number.POSITIVE_INFINITY;
-  private max = Number.NEGATIVE_INFINITY;
-  private oldMean = 0;
-  private newMean = 0;
-  private oldS = 0;
-  private newS = 0;
-  private sampleStandardDeviation = 0;
+  private min: number;
+  private max: number;
+  private mean: number;
+  // Sum of squared difference from the mean.
+  private s = 0;
 
   N(): number {
     return this.n;
@@ -24,11 +19,11 @@ export class Statistics {
   }
 
   Sum(): number {
-    return this.sum;
+    return this.Mean() * this.n;
   }
 
   Mean(): number {
-    return this.newMean;
+    return this.mean;
   }
 
   Variance(): number {
@@ -36,62 +31,46 @@ export class Statistics {
       return 0;
     }
 
-    return this.newS / (this.n - 1);
+    return this.s / this.n;
   }
 
   StandardDeviation(): number {
     return Math.sqrt(this.Variance());
   }
 
-  SampleStandardDeviation(): number {
-    return this.sampleStandardDeviation;
-  }
-
-  Push(x: number[]): void {
-    this.sum += ss.sum(x);
-    this.min = ss.min(x.concat(this.min));
-    this.max = ss.max(x.concat(this.max));
-
-    x.forEach(value => {
-      this.PushValue(value);
-    });
-  }
-
   Print(): void {
-    console.log(`
-Count  : ${this.N()}
-Sum    : ${this.Sum()}
-Min    : ${this.Min()}
-Max    : ${this.Max()}
-Mean   : ${this.Mean()}
-Var.s  : ${this.Variance()}
-Stdev.s: ${this.StandardDeviation()}`);
+    console.log(`Count: ${this.N()}
+Sum  : ${this.Sum()}
+Min  : ${this.Min()}
+Max  : ${this.Max()}
+Mean : ${this.Mean()}
+Var  : ${this.Variance()}
+Stdev: ${this.StandardDeviation()}`);
   }
 
-  private PushValue(x: number): void {
+  public Push(x: number): void {
     this.n++;
 
-    // See Knuth TAOCP vol 2, 3rd edition, page 232.
+    /**
+     * The algorithms for the mean and sum of squared difference from the mean
+     * are based on an algorithm from Donald E. Knuth - The Art of Computer
+     * Programming volume 2, 3rd edition §4.2.2, equation 15 and 16
+     * respectively.
+     */
     if (this.n === 1) {
-      this.newMean = x;
-      this.oldMean = this.newMean;
+      this.mean = x;
+      this.min = x;
+      this.max = x;
     } else {
-      this.newMean = this.oldMean + (x - this.oldMean) / this.n;
-      this.newS = this.oldS + (x - this.oldMean) * (x - this.newMean);
+      const oldMean = this.mean;
+      this.mean += (x - oldMean) / this.n;
+      this.s += (x - oldMean) * (x - this.mean);
 
-      console.log(
-        ' ',
-        x,
-        ': ',
-        this.oldS,
-        this.newS,
-        this.oldMean,
-        this.newMean
-      );
-
-      // Prepare for the next iteration.
-      this.oldMean = this.newMean;
-      this.oldS = this.newS;
+      if (x < this.min) {
+        this.min = x;
+      } else if (x > this.max) {
+        this.max = x;
+      }
     }
   }
 }
