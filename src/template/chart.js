@@ -1,7 +1,7 @@
 $.getJSON('{{ dataFile }}', function(data) {
   const start = new Date();
   // eslint-disable-next-line no-undef
-  Highcharts.stockChart('container', {
+  Highcharts.stockChart('chart-container', {
     chart: {
       type: 'line',
       events: {
