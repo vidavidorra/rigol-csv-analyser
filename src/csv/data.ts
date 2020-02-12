@@ -32,13 +32,6 @@ export class Data {
         reject(error);
       });
       readStream.on('end', (): void => {
-        this.csv
-          .Header()
-          .Channels()
-          .forEach((channel, index) => {
-            console.log(`\n${channel}`);
-            statistics[index].Print();
-          });
         resolve(statistics);
       });
 

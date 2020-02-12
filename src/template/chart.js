@@ -1,3 +1,61 @@
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+function SetFormattedMathElement(id, value) {
+  // eslint-disable-next-line no-undef
+  document.getElementById(id).innerText = value.toLocaleString(undefined, {
+    minimumFractionDigits: 6,
+    maximumFractionDigits: 6,
+  });
+}
+
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+function AfterUpdateEvent() {
+  const xAxis = {
+    min: Math.max(Math.floor(this.xAxisMin), 0),
+    max: Math.ceil(this.xAxisMax),
+  };
+  /** Min and max seem to be swapped around in the Highstock `this` object */
+  const yAxis = {
+    min: this.yAxisMax,
+    max: this.yAxisMin,
+  };
+
+  const series = this.chart.series.slice(0, -1);
+  series.forEach(serie => {
+    const serieData = serie.yData.slice(xAxis.min, xAxis.max).filter(value => {
+      return value > yAxis.min && value < yAxis.max;
+    });
+
+    if (!serieData.length) {
+      return;
+    }
+
+    /* eslint-disable no-undef */
+    const count = serieData.length;
+    const sum = math.sum(serieData);
+    const mean = math.mean(serieData);
+    const min = math.min(serieData);
+    const max = math.max(serieData);
+    const variance = math.variance(serieData, 'uncorrected');
+    const standardDeviation = math.std(serieData, 'uncorrected');
+    /* eslint-enable no-undef */
+
+    [
+      { id: `${serie.name}Count`, value: count },
+      { id: `${serie.name}Sum`, value: sum },
+      { id: `${serie.name}Min`, value: min },
+      { id: `${serie.name}Max`, value: max },
+      { id: `${serie.name}Mean`, value: mean },
+      { id: `${serie.name}Variance`, value: variance },
+      {
+        id: `${serie.name}StandardDeviation`,
+        value: standardDeviation,
+      },
+    ].forEach(element => {
+      SetFormattedMathElement(element.id, element.value);
+    });
+  });
+}
+
 $.getJSON('{{ dataFile }}', function(data) {
   const start = new Date();
   // eslint-disable-next-line no-undef
@@ -155,6 +213,9 @@ $.getJSON('{{ dataFile }}', function(data) {
             width: 300 + 'px',
             height: 150 + 'px',
           },
+        },
+        events: {
+          afterUpdate: AfterUpdateEvent,
         },
       },
     ],

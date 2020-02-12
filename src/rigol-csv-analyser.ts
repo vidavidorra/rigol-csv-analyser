@@ -48,7 +48,6 @@ export class RigolCsvAnalyser {
         .then(() => {
           this.statistics = csvInstance.Statistics();
           this.statistics.forEach(statistic => {
-            console.log('Statistic!!!');
             statistic.Print();
           });
           this.GenerateChart();
@@ -97,6 +96,7 @@ export class RigolCsvAnalyser {
     const channelHeaderTemplate = `<th class="mdl-data-table__cell--non-numeric">{{ content }}</th>`;
     const nonNumericTemplate = `<{{ tag }} class="mdl-data-table__cell--non-numeric">{{ content }}</{{ tag }}>`;
     const numericTemplate = `<{{ tag }}>{{ content }}</{{ tag }}>`;
+    const numericIdTemplate = `<{{ tag }} id="{{ id }}">{{ content }}</{{ tag }}>`;
     const table = [
       '<thead>',
       '<tr>',
@@ -163,11 +163,20 @@ export class RigolCsvAnalyser {
         quantities.standardDeviation.totalValues.push(
           statistics.StandardDeviation()
         );
+
+        quantities.count.selectionValues.push(`${channel}Count`);
+        quantities.sum.selectionValues.push(`${channel}Sum`);
+        quantities.min.selectionValues.push(`${channel}Min`);
+        quantities.max.selectionValues.push(`${channel}Max`);
+        quantities.mean.selectionValues.push(`${channel}Mean`);
+        quantities.variance.selectionValues.push(`${channel}Variance`);
+        quantities.standardDeviation.selectionValues.push(
+          `${channel}StandardDeviation`
+        );
       });
 
     Object.keys(quantities).forEach(key => {
       const quantity = quantities[key];
-      // quantities.forEach(quantity => {
       table.push('<tr>');
       table.push(
         mustache.render(nonNumericTemplate, {
@@ -176,61 +185,30 @@ export class RigolCsvAnalyser {
         })
       );
 
-      quantity.totalValues.forEach(totalValue => {
-        table.push(
-          mustache.render(numericTemplate, {
-            tag: 'td',
-            content: totalValue,
-          })
-        );
-      });
+      this.csv
+        .Header()
+        .Channels()
+        .forEach((channel, index) => {
+          table.push(
+            mustache.render(numericTemplate, {
+              tag: 'td',
+              content: quantity.totalValues[index],
+            })
+          );
+          table.push(
+            mustache.render(numericIdTemplate, {
+              tag: 'td',
+              id: quantity.selectionValues[index],
+              contend: 0,
+            })
+          );
+        });
 
-      quantity.selectionValues.forEach(selectionValue => {
-        table.push(
-          mustache.render(numericTemplate, {
-            tag: 'td',
-            content: selectionValue,
-          })
-        );
-      });
       table.push('</tr>');
     });
 
     table.push('</tbody>');
 
     return table.join('\n');
-
-    // <table
-    //   class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp"
-    // >
-    //   <thead>
-    //     <tr>
-    //       <th class="mdl-data-table__cell--non-numeric">Material</th>
-    //       <th>Quantity</th>
-    //       <th>Unit price</th>
-    //     </tr>
-    //   </thead>
-    //   <tbody>
-    //     <tr>
-    //       <td class="mdl-data-table__cell--non-numeric">
-    //         Acrylic (Transparent)
-    //       </td>
-    //       <td>25</td>
-    //       <td>$2.90</td>
-    //     </tr>
-    //     <tr>
-    //       <td class="mdl-data-table__cell--non-numeric">Plywood (Birch)</td>
-    //       <td>50</td>
-    //       <td>$1.25</td>
-    //     </tr>
-    //     <tr>
-    //       <td class="mdl-data-table__cell--non-numeric">
-    //         Laminate (Gold on Blue)
-    //       </td>
-    //       <td>10</td>
-    //       <td>$2.35</td>
-    //     </tr>
-    //   </tbody>
-    // </table>
   }
 }
