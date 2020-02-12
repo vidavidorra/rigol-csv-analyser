@@ -24,7 +24,7 @@ export class Data {
     this.read = false;
   }
 
-  public Convert(): Promise<void> {
+  public Convert(): Promise<Statistics[]> {
     return new Promise((resolve, reject) => {
       const statistics = this.ChannelStatistics();
       const readStream = fs.createReadStream(this.path, 'utf8');
@@ -35,11 +35,11 @@ export class Data {
         this.csv
           .Header()
           .Channels()
-          .forEach(channel => {
+          .forEach((channel, index) => {
             console.log(`\n${channel}`);
-            statistics[channel].Print();
+            statistics[index].Print();
           });
-        resolve();
+        resolve(statistics);
       });
 
       const writeStreams = this.ChannelWriteStreams();
@@ -73,7 +73,7 @@ export class Data {
                 index
               ] += `        [${row.index}, ${row.values[index]}],\n`;
               let shouldWrite = lineCount % outputRows === 0;
-              statistics[channel].Push(row.values[index]);
+              statistics[index].Push(row.values[index]);
 
               if (lineCount === this.csv.Info().NumberOfRows()) {
                 outputs[index] = outputs[index].slice(0, -2) + '\n';
@@ -180,13 +180,13 @@ export class Data {
     return writeStreams;
   }
 
-  private ChannelStatistics(): {} {
-    const statistics = {};
+  private ChannelStatistics(): Statistics[] {
+    const statistics = [];
     this.csv
       .Header()
       .Channels()
-      .forEach(channel => {
-        statistics[channel] = new Statistics();
+      .forEach(() => {
+        statistics.push(new Statistics());
       });
 
     return statistics;

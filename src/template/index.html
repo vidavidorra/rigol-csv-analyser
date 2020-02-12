@@ -1,7 +1,7 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>Oscilloscope measurements</title>
+    <title>{{ title }}</title>
   </head>
   <body>
     <link
@@ -41,15 +41,16 @@
 
     <script src="{{ chartScript }}"></script>
 
-    <div>
-      <div class="mdl-layout mdl-js-layout">
-        <div id="chart-container"></div>
-        <div id="container"></div>
-        <div class="mdl-layout-spacer"></div>
-        <div class="mdl-layout-spacer"></div>
+    <div class="mdl-layout mdl-js-layout">
+      <main class="mdl-layout__content">
+        <div class="page-content">
+          <div id="chart-container"></div>
 
-        {{{ table }}}
-      </div>
+          <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+            {{{ tableContent }}}
+          </table>
+        </div>
+      </main>
     </div>
   </body>
 </html>

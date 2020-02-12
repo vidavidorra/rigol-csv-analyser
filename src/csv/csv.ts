@@ -2,11 +2,13 @@ import * as models from '../models/csv';
 import { CsvHeader } from './header';
 import { CsvInfo } from './info';
 import { Data } from './data';
+import { Statistics } from '../statistics';
 
 export class Csv {
   private path: string;
   private csv: models.Csv;
   private read: boolean;
+  private statistics: Statistics[];
 
   constructor(path: string) {
     this.path = path;
@@ -23,6 +25,10 @@ export class Csv {
     });
   }
 
+  public Statistics(): Statistics[] {
+    return this.statistics;
+  }
+
   public ProcessData(
     outputFile: string,
     channelNames: string[],
@@ -33,6 +39,9 @@ export class Csv {
     return this.Read()
       .then(() => {
         return data.Convert();
+      })
+      .then(statistics => {
+        this.statistics = statistics;
       })
       .then(() => {
         return data.Combine(this.ChannelNames(channelNames, channelUnits));
