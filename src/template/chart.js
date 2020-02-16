@@ -1,9 +1,9 @@
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function SetFormattedMathElement(id, value) {
+function SetFormattedMathElement(id, value, digits) {
   // eslint-disable-next-line no-undef
   document.getElementById(id).innerText = value.toLocaleString(undefined, {
-    minimumFractionDigits: 6,
-    maximumFractionDigits: 6,
+    minimumFractionDigits: digits,
+    maximumFractionDigits: digits,
   });
 }
 
@@ -204,19 +204,24 @@ $.getJSON('{{ dataFile }}', function(data) {
               /* eslint-enable no-undef */
 
               [
-                { id: `${serie.name}Count`, value: count },
-                { id: `${serie.name}Duration`, value: duration },
-                { id: `${serie.name}Sum`, value: sum },
-                { id: `${serie.name}Min`, value: min },
-                { id: `${serie.name}Max`, value: max },
-                { id: `${serie.name}Mean`, value: mean },
-                { id: `${serie.name}Variance`, value: variance },
+                { id: `${serie.name}Count`, value: count, digits: 0 },
+                { id: `${serie.name}Duration`, value: duration, digits: 6 },
+                { id: `${serie.name}Sum`, value: sum, digits: 6 },
+                { id: `${serie.name}Min`, value: min, digits: 6 },
+                { id: `${serie.name}Max`, value: max, digits: 6 },
+                { id: `${serie.name}Mean`, value: mean, digits: 6 },
+                { id: `${serie.name}Variance`, value: variance, digits: 6 },
                 {
                   id: `${serie.name}StandardDeviation`,
                   value: standardDeviation,
+                  digits: 6,
                 },
               ].forEach(element => {
-                SetFormattedMathElement(element.id, element.value);
+                SetFormattedMathElement(
+                  element.id,
+                  element.value,
+                  element.digits
+                );
               });
             });
           },
