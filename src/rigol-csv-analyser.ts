@@ -132,6 +132,7 @@ export class RigolCsvAnalyser {
 
     const quantities = {
       count: { name: 'Count', totalValues: [], selectionValues: [] },
+      duration: { name: 'Duration [s]', totalValues: [], selectionValues: [] },
       sum: { name: 'Sum', totalValues: [], selectionValues: [] },
       min: { name: 'Min', totalValues: [], selectionValues: [] },
       max: { name: 'Max', totalValues: [], selectionValues: [] },
@@ -155,6 +156,9 @@ export class RigolCsvAnalyser {
         console.log(channel, index);
         const statistics = this.statistics[index];
         quantities.count.totalValues.push(statistics.N());
+        quantities.duration.totalValues.push(
+          statistics.N() * this.csv.Header().Increment()
+        );
         quantities.sum.totalValues.push(statistics.Sum());
         quantities.min.totalValues.push(statistics.Min());
         quantities.max.totalValues.push(statistics.Max());
@@ -165,6 +169,7 @@ export class RigolCsvAnalyser {
         );
 
         quantities.count.selectionValues.push(`${channel}Count`);
+        quantities.duration.selectionValues.push(`${channel}Duration`);
         quantities.sum.selectionValues.push(`${channel}Sum`);
         quantities.min.selectionValues.push(`${channel}Min`);
         quantities.max.selectionValues.push(`${channel}Max`);

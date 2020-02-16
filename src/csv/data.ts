@@ -90,7 +90,16 @@ export class Data {
   public Combine(channelNames: string[]): Promise<void> {
     return new Promise((resolve, reject) => {
       const combinedStream = CombinedStream.create();
-      combinedStream.append(intoStream('{\n  "series": [\n'));
+      // combinedStream.append(intoStream('{\n  "series": [\n'));
+      combinedStream.append(
+        intoStream(
+          [
+            '{',
+            `  "increment": ${this.csv.Header().Increment()},`,
+            '  "series": [',
+          ].join('\n')
+        )
+      );
 
       this.csv
         .Header()
