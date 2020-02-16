@@ -35,6 +35,7 @@ export class Data {
         resolve(statistics);
       });
 
+      const indexIncrement = this.csv.Header().Increment() / 1e-6;
       const writeStreams = this.ChannelWriteStreams();
       const outputRows = 1024;
       const outputs = [];
@@ -62,9 +63,9 @@ export class Data {
             .Header()
             .Channels()
             .forEach((channel, index) => {
-              outputs[
-                index
-              ] += `        [${row.index}, ${row.values[index]}],\n`;
+              outputs[index] += `        [${row.index * indexIncrement}, ${
+                row.values[index]
+              }],\n`;
               let shouldWrite = lineCount % outputRows === 0;
               statistics[index].Push(row.values[index]);
 
@@ -96,8 +97,9 @@ export class Data {
         intoStream(
           [
             '{',
-            `  "increment": ${this.csv.Header().Increment()},`,
-            `  "numberOfRows": ${numberOfDataRows},`,
+            '  "increment": 1e-6,',
+            `  "maxDuration": ${this.csv.Header().Increment() *
+              numberOfDataRows},`,
             '  "series": [',
           ].join('\n')
         )
