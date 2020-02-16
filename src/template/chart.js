@@ -172,7 +172,7 @@ $.getJSON('{{ dataFile }}', function(data) {
 
             const xAxis = {
               min: Math.max(Math.floor(this.xAxisMin), 0),
-              max: Math.ceil(this.xAxisMax),
+              max: Math.min(Math.ceil(this.xAxisMax), data.numberOfRows),
             };
             /** Min and max seem to be swapped around in the Highstock `this` object */
             const yAxis = {
