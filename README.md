@@ -9,6 +9,7 @@ This project shows statistics of the measurements and can polt them in an iterac
 - [Badges](#badges)
 - [Documentation](#documentation)
   - [Usage](#usage)
+  - [HTML graph](#html-graph)
   - [Devices](#devices)
 - [License](#license)
 
@@ -58,6 +59,14 @@ Examples:
 ```
 
 <a name="devices"></a>
+
+<a name="html-graph"></a>
+
+### HTML graph
+
+The measurements can be plotted in an interactive HTML graph. How this graph looks like is shown in the image below.
+
+![HTML graph](./.assets/html-page.png)
 
 ### Devices
 
