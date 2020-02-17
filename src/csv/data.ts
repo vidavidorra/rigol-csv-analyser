@@ -35,7 +35,7 @@ export class Data {
         resolve(statistics);
       });
 
-      const indexIncrement = this.csv.Header().Increment() / 1e-6;
+      const indexIncrement = Math.round(this.csv.Header().Increment() / 1e-6);
       const writeStreams = this.ChannelWriteStreams();
       const outputRows = 1024;
       const outputs = [];
@@ -98,6 +98,10 @@ export class Data {
           [
             '{',
             '  "increment": 1e-6,',
+            `  "indexIncrement": ${Math.round(
+              this.csv.Header().Increment() / 1e-6
+            )},`,
+            `  "dataElements": ${numberOfDataRows},`,
             `  "maxDuration": ${this.csv.Header().Increment() *
               numberOfDataRows},`,
             '  "series": [',

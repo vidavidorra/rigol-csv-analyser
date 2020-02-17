@@ -169,8 +169,11 @@ $.getJSON('{{ dataFile }}', function(data) {
           // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
           afterUpdate: function() {
             const xAxis = {
-              min: Math.max(Math.floor(this.xAxisMin), 0),
-              max: Math.ceil(this.xAxisMax),
+              min: Math.max(Math.floor(this.xAxisMin) / data.indexIncrement, 0),
+              max: Math.min(
+                Math.ceil(this.xAxisMax / data.indexIncrement),
+                data.dataElements
+              ),
             };
             /** Min and max seem to be swapped around in the Highstock `this` object */
             const yAxis = {
@@ -193,7 +196,7 @@ $.getJSON('{{ dataFile }}', function(data) {
               /* eslint-disable no-undef */
               const count = serieData.length;
               const duration = math.min(
-                (xAxis.max - xAxis.min) * data.increment,
+                (xAxis.max - xAxis.min) * data.indexIncrement * data.increment,
                 data.maxDuration
               );
               const sum = math.sum(serieData);
