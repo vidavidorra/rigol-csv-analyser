@@ -155,17 +155,29 @@ export class RigolCsvAnalyser {
       .forEach((channel, index) => {
         console.log(channel, index);
         const statistics = this.statistics[index];
-        quantities.count.totalValues.push(statistics.N());
-        quantities.duration.totalValues.push(
-          statistics.N() * this.csv.Header().Increment()
+        quantities.count.totalValues.push(
+          this.DigitToString(statistics.N(), 0)
         );
-        quantities.sum.totalValues.push(statistics.Sum());
-        quantities.min.totalValues.push(statistics.Min());
-        quantities.max.totalValues.push(statistics.Max());
-        quantities.mean.totalValues.push(statistics.Mean());
-        quantities.variance.totalValues.push(statistics.Variance());
+        quantities.duration.totalValues.push(
+          this.DigitToString(statistics.N() * this.csv.Header().Increment(), 6)
+        );
+        quantities.sum.totalValues.push(
+          this.DigitToString(statistics.Sum(), 6)
+        );
+        quantities.min.totalValues.push(
+          this.DigitToString(statistics.Min(), 6)
+        );
+        quantities.max.totalValues.push(
+          this.DigitToString(statistics.Max(), 6)
+        );
+        quantities.mean.totalValues.push(
+          this.DigitToString(statistics.Mean(), 6)
+        );
+        quantities.variance.totalValues.push(
+          this.DigitToString(statistics.Variance(), 6)
+        );
         quantities.standardDeviation.totalValues.push(
-          statistics.StandardDeviation()
+          this.DigitToString(statistics.StandardDeviation(), 6)
         );
 
         quantities.count.selectionValues.push(`${channel}Count`);
@@ -215,5 +227,12 @@ export class RigolCsvAnalyser {
     table.push('</tbody>');
 
     return table.join('\n');
+  }
+
+  private DigitToString(value: number, digits: number): string {
+    return value.toLocaleString(undefined, {
+      minimumFractionDigits: digits,
+      maximumFractionDigits: digits,
+    });
   }
 }
