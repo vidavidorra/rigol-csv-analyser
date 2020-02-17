@@ -35,6 +35,10 @@ class Cli {
             .example(
               "$0 test.csv --unit V A --name 'ADC input' Vref",
               'Multiple channels with different units and names'
+            )
+            .example(
+              '$0 test.csv --serve=false',
+              "Calculate the statistics but don't serve the HTML output"
             );
         }
       )
