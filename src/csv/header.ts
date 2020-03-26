@@ -66,7 +66,7 @@ export class CsvHeader {
           const keys = Object.keys(row);
 
           const increment = row.increment;
-          const channels = keys.filter(key => key.startsWith('ch'));
+          const channels = keys.filter((key) => key.startsWith('ch'));
 
           this.header = new models.Header(increment, channels);
 

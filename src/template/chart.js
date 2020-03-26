@@ -7,7 +7,8 @@ function SetFormattedMathElement(id, value, digits) {
   });
 }
 
-$.getJSON('{{ dataFile }}', function(data) {
+// eslint-disable-next-line no-undef
+$.getJSON('{{ dataFile }}', function (data) {
   const start = new Date();
   // eslint-disable-next-line no-undef
   Highcharts.stockChart('chart-container', {
@@ -15,12 +16,12 @@ $.getJSON('{{ dataFile }}', function(data) {
       type: 'line',
       events: {
         // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-        load: function() {
+        load: function () {
           this.setTitle(null, {
             text: `Built chart in ${new Date() - start} ms`,
           });
 
-          this.annotations.forEach(annotation => {
+          this.annotations.forEach((annotation) => {
             annotation.setControlPointsVisibility(true);
             annotation.cpVisibility = true;
           });
@@ -110,7 +111,7 @@ $.getJSON('{{ dataFile }}', function(data) {
       type: 'datetime',
       labels: {
         // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-        formatter: function() {
+        formatter: function () {
           // console.log(
           //   `min: ${this.axis.min.toFixed(0) /
           //     1000} μs, max: ${this.axis.max.toFixed(0) / 1000} μs, range: ${(
@@ -125,10 +126,10 @@ $.getJSON('{{ dataFile }}', function(data) {
     tooltip: {
       split: true,
       // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-      formatter: function() {
+      formatter: function () {
         const tooltip = [`<b>${(this.x / 1000).toLocaleString()} ms<b>`];
 
-        this.points.forEach(point => {
+        this.points.forEach((point) => {
           tooltip.push(`${point.y} V`);
         });
 
@@ -140,7 +141,7 @@ $.getJSON('{{ dataFile }}', function(data) {
       xAxis: {
         labels: {
           // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-          formatter: function() {
+          formatter: function () {
             return `${(this.value / 1000).toLocaleString()} ms`;
           },
         },
@@ -167,7 +168,7 @@ $.getJSON('{{ dataFile }}', function(data) {
         },
         events: {
           // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-          afterUpdate: function() {
+          afterUpdate: function () {
             const xAxis = {
               min: Math.max(Math.floor(this.xAxisMin) / data.indexIncrement, 0),
               max: Math.min(
@@ -182,10 +183,10 @@ $.getJSON('{{ dataFile }}', function(data) {
             };
 
             const series = this.chart.series.slice(0, -1);
-            series.forEach(serie => {
+            series.forEach((serie) => {
               const serieData = serie.yData
                 .slice(xAxis.min, xAxis.max)
-                .filter(value => {
+                .filter((value) => {
                   return value > yAxis.min && value < yAxis.max;
                 });
 
@@ -220,7 +221,7 @@ $.getJSON('{{ dataFile }}', function(data) {
                   value: standardDeviation,
                   digits: 6,
                 },
-              ].forEach(element => {
+              ].forEach((element) => {
                 SetFormattedMathElement(
                   element.id,
                   element.value,

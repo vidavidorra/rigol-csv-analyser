@@ -31,11 +31,11 @@ export class RigolCsvAnalyser {
   }
 
   public Analyse(): Promise<void> {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       const csvInstance = new csv.Csv(this.options.csvFile);
       csvInstance
         .Csv()
-        .then(csvData => {
+        .then((csvData) => {
           this.csv = csvData;
         })
         .then(() => {
@@ -47,7 +47,7 @@ export class RigolCsvAnalyser {
         })
         .then(() => {
           this.statistics = csvInstance.Statistics();
-          this.statistics.forEach(statistic => {
+          this.statistics.forEach((statistic) => {
             statistic.Print();
           });
           this.GenerateChart();
@@ -109,7 +109,7 @@ export class RigolCsvAnalyser {
     this.csv
       .Header()
       .Channels()
-      .forEach(channel => {
+      .forEach((channel) => {
         table.push(
           mustache.render(nonNumericTemplate, {
             tag: 'th',
@@ -192,7 +192,7 @@ export class RigolCsvAnalyser {
         );
       });
 
-    Object.keys(quantities).forEach(key => {
+    Object.keys(quantities).forEach((key) => {
       const quantity = quantities[key];
       table.push('<tr>');
       table.push(

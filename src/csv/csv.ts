@@ -40,7 +40,7 @@ export class Csv {
       .then(() => {
         return data.Convert();
       })
-      .then(statistics => {
+      .then((statistics) => {
         this.statistics = statistics;
       })
       .then(() => {
@@ -67,10 +67,7 @@ export class Csv {
     channelUnits: string[]
   ): string[] {
     const names = channelNames.concat(
-      this.csv
-        .Header()
-        .Channels()
-        .slice(channelNames.length)
+      this.csv.Header().Channels().slice(channelNames.length)
     );
 
     return names.map((name, index) => {

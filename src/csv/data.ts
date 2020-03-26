@@ -102,8 +102,9 @@ export class Data {
               this.csv.Header().Increment() / 1e-6
             )},`,
             `  "dataElements": ${numberOfDataRows},`,
-            `  "maxDuration": ${this.csv.Header().Increment() *
-              numberOfDataRows},`,
+            `  "maxDuration": ${
+              this.csv.Header().Increment() * numberOfDataRows
+            },`,
             '  "series": [',
           ].join('\n')
         )
@@ -163,7 +164,7 @@ export class Data {
       index: Number(elements[0]),
       values: [],
     };
-    elements.slice(1).forEach(element => {
+    elements.slice(1).forEach((element) => {
       row.values.push(Number(element));
     });
 
@@ -175,7 +176,7 @@ export class Data {
     this.csv
       .Header()
       .Channels()
-      .forEach(channel => {
+      .forEach((channel) => {
         const writeStream = fs.createWriteStream(
           this.ChannelOutputFile(channel),
           {
@@ -207,7 +208,7 @@ export class Data {
   }
 
   private RemoveTempFiles(): void {
-    this.tempFiles.forEach(file => {
+    this.tempFiles.forEach((file) => {
       fs.unlinkSync(file);
     });
   }
