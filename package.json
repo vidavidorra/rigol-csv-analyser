@@ -44,7 +44,7 @@
     "chalk-cli": "4.1.0",
     "combined-stream": "1.0.8",
     "concurrently": "5.2.0",
-    "csv-parse": "4.9.1",
+    "csv-parse": "4.10.1",
     "eslint": "7.0.0",
     "eslint-config-prettier": "6.11.0",
     "eslint-plugin-json": "2.1.1",
