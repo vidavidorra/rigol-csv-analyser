@@ -171,8 +171,8 @@ export class Data {
     return row;
   }
 
-  private ChannelWriteStreams(): {} {
-    const writeStreams = {};
+  private ChannelWriteStreams(): fs.WriteStream[] {
+    const writeStreams: fs.WriteStream[] = [];
     this.csv
       .Header()
       .Channels()
