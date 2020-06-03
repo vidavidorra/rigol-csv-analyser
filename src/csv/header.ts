@@ -56,7 +56,7 @@ export class CsvHeader {
 
       readStream.on('data', (chunk): void => {
         let records = parse(chunk, {
-          relax_column_count: true, // eslint-disable-line @typescript-eslint/camelcase
+          relax_column_count: true, // eslint-disable-line @typescript-eslint/naming-convention
           columns: true,
         });
 
